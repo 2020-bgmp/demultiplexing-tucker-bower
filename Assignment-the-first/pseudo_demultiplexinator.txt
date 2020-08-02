@@ -1,0 +1,84 @@
+Goals of this pseudo code (problem):
+Iterate through four input fastq files. Check if the indexes for each read match and sort
+the reads by their index such that each index from each read (1 or 2) has its own fastq file
+containing all the reads from that category. Also sort mismatched reads into a separate pair of files
+
+import the following modules:
+numpy (for numpy arrays)
+gzip (to open the gz files)
+itertools (helps with iterations, combinations, permutations. Can be used for generating output file names)
+
+Define inputs:
+READ1 = 'projects/bgmp/shared/2017_sequencing/1294_S1_L008_R1_001.fastq.gz' # This is read 1 
+READ2 = 'projects/bgmp/shared/2017_sequencing/1294_S1_L008_R2_001.fastq.gz' # This is index 1 (i5)
+READ3 = 'projects/bgmp/shared/2017_sequencing/1294_S1_L008_R3_001.fastq.gz' # This is index 2 (i7) should be the reverse complement of i5 if indexes are matched
+READ4 = 'projects/bgmp/shared/2017_sequencing/1294_S1_L008_R4_001.fastq.gz' # This is read 2 (note: this is on the opposite strand from read 1)
+
+Define outputs: (maybe use a function to name the output files)
+Outputs:
+    -24 output files of matched READ1 indexed reads (one for each index)
+    -24 output files of matched READ2 indexed reads
+    -2 files of reads that were index hopped (one for each READ)
+    -2 files for non-matching or low quality index pairs
+    -1 file containing the following: 
+        -A count of the number of read-pairs with properly matched indexes
+        -A count of the read-pairs with index hopping issues
+        -A count of the read-pairs with unknown indexes (q_score is too low, or an N is present)
+        -Counts for how many times each possible permutation of indexes happened (ex: B1_B9: 2700)
+         Indicates index hopped pair of B1 index on read 1 and B9 on read 2 happened 2700 times
+
+Open all 4 input files with read option
+Open/create all 53 output files with write+create option (w+)
+Note: DO NOT "with open" or your script will be a mess of indentations.
+
+
+Create a dictionary where the keys are the index names and the values are the sequences of that index
+
+Def reverse_complement_inator(dna_seq):
+    '''This functions takes a DNA sequence and returns the reverse complement. Assumes Watson-
+    Crick base pairing, and N remains unchanged.'''
+    Indexing is used to create the reverse of a given string.
+    Create dict where the keys are each nucleotide, and the values are the reverse complement of that nucleotide.
+    Replace the characters in the reversed string of nucleotides with their complementary bases
+    return reverse_complement
+
+#test example
+define a string as 'GATTACA'
+run reverse_complement_inator on that string
+assert that the resultant string is the reverse complement, 'TGTAATC'
+
+Create a copy of the index name:sequence dictionary
+run reverse_complement_inator on each value in that new dict, such that now you have two dicts, one with the forward
+    sequences of the indexes and one with the reverse complements of the indexes.
+
+Create variables to act as counters for read-pair index match types, and set them all equal to zero.
+properly_matched_counter
+index_hopped_counter
+unknown_index_counter
+
+Create counters for each possible permutation of indexes:
+    -#in total there should be 24**2 = 576 permutations of indexes
+    Use itertools to create a list of every permutation possible of the items in the index dict's values(The index name)
+    Make a new dict where the keys are those permutations as strings (example 'B1_B9'). the values should be set to None or 0 at this point
+
+Use nested loops to iterate through the list of index 
+
+Loop through each file, one record at a time
+    set variables for read 1, index 1, index 2, and read 2 
+    Check if the indexes are both in their appropriate dictionaries (forward dict for index 1, reverse indexes dict for index 2)
+    check if the Q scores for the indexes are up to the standards we set (I don't think this has been decided yet)
+    if one or more index is not in the dict or if the Q scores are not up to spec
+        put the records into the non-matching/low quality FASTQ files
+        increment the unknown_index_counter by 1
+    check if index 1 is equal to the complement of index 2 with reverse_complement_inator
+        If so, put the records into fastq files named for their index, read, and matched
+        Increase the properly_matched_counter by 1
+        if not, create a new variable equal to the names of the indexes concatenated (example: 'B1_B9') #This string should always be identical to a key in the permutations dict
+        increment the value for that key in the permutations dict by 1
+        write the records into the index hopped FASTQ files for their reads
+        increment the index_hopped_counter by 1
+
+
+Output the dict keys and values of the permutations dict, the properly_matched_counter, the unknown_index_counter, and the 
+index_hopped_counter into an demultiplexinator_stats.txt file.
+
