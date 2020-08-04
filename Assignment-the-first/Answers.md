@@ -13,7 +13,9 @@ cd# Assignment the First
 2. Per-base NT distribution
     1. Use markdown to insert your 4 histograms here.
     2. ![R1 Qscore distribution](https://github.com/2020-bgmp/demultiplexing-tucker-bower/blob/master/Assignment-the-first/Qscore_analyzer_outputs/Mean_Qscore_by_position_R1.png)
-    3. ```Your answer here```
+    3. ![R2 Qscore distribution](https://github.com/2020-bgmp/demultiplexing-tucker-bower/blob/master/Assignment-the-first/Qscore_analyzer_outputs/Mean_Qscore_by_position_R2.png)
+    ![R3 Qscore distribution](https://github.com/2020-bgmp/demultiplexing-tucker-bower/blob/master/Assignment-the-first/Qscore_analyzer_outputs/Mean_Qscore_by_position_R3.png)
+    ![R4 Qscore distribution](https://github.com/2020-bgmp/demultiplexing-tucker-bower/blob/master/Assignment-the-first/Qscore_analyzer_outputs/Mean_Qscore_by_position_R4.png)
     
 ## Part 2
 1. Define the problem
